@@ -1,0 +1,2 @@
+# directory-ui-verification-matching-service-adapter
+Deployment script for https://github.com/alphagov/verify-matching-service-adapter
