@@ -1,5 +1,5 @@
 # Configure the matching service adapter's server settings here.
-# See http://www.dropwizard.io/1.0.5/docs/manual/configuration.html#servers 
+# See http://www.dropwizard.io/1.0.5/docs/manual/configuration.html#servers
 # for more information.
 server:
   # Ports on which to listen for normal connections.
@@ -7,26 +7,26 @@ server:
   # for information on HTTPS and TLS connections.
   applicationConnectors:
     - type: http
-      port: 8080
+      port: ${PORT:-8080}
   # Ports on which to listen for admin tasks.
   # This can probably be set to the above port+1.
   adminConnectors:
     - type: http
-      port: 8081
+      port: ${ADMIN_PORT:-8081}
 
 # Add information about your matching service adapter (MSA) here.
 matchingServiceAdapter:
   # The entityId is used for SAML communication with Verify.
-  entityId: my-entity-id
+  entityId: ${MATCHING_SERVICE_ENTITY_ID:-}
   # The externalUrl is the internet-facing URL for your MSA.
-  externalUrl: http://service.gov.uk/matching-service/POST
+  externalUrl: ${MATCHING_SERVICE_POST_URL:-}
 
 # Configure the URLs for your local matching service here.
 localMatchingService:
   # The matchUrl is where the MSA should post user attributes on a successful match
-  matchUrl: http://service.gov.uk/local-matching/match
+  matchUrl: ${LOCAL_MATCHING_SERVICE_MATCH_URL:-}
   # The accountCreationUrl is where the MSA should post attributes for unknown users
-  accountCreationUrl: http://service.gov.uk/local-matching/create-account
+  accountCreationUrl: ${ACCOUNT_CREATION_URL:-}
 
 # Configure the key pairs used by your MSA for signing SAML messages here.
 signingKeys:
@@ -34,48 +34,48 @@ signingKeys:
   primary:
     publicKey:
       # The certificate (.crt) containing the primary public signing key:
-      certFile: primary_signing.crt
+      certFile: ${PRIMARY_PUBLIC_SIGNING_KEY_CRT_PATH:-}
       # The common name (CN) of that certificate:
-      name: MSA Signing
+      name: ${PRIMARY_PUBLIC_SIGNING_KEY_CRT_COMMON_NAME:-MSA Signing}
     privateKey:
       # The PK8 (.pk8) containing the primary private signing key:
-      keyFile: primary_signing.pk8
-  # The public part of the secondary signing key is published in the MSA's metadata 
+      keyFile: ${PRIMARY_PRIVATE_SIGNING_KEY_PK8_PATH:-}
+  # The public part of the secondary signing key is published in the MSA's metadata
   # during key rollovers but is otherwise unused by the MSA.
   secondary:
     publicKey:
-      certFile: secondary_signing.crt
-      name: Another MSA Signing
+      certFile: ${SECONDARY_PUBLIC_SIGNING_KEY_CRT_PATH:-}
+      name: ${SECONDARY_PUBLIC_SIGNING_KEY_CRT_COMMON_NAME:-Secondary MSA Signing}
     privateKey:
-      keyFile: secondary_signing.pk8
+      keyFile: ${SECONDARY_PRIVATE_SIGNING_KEY_PK8_PATH:-}
 
 # Configure the key pairs used by your MSA for encrypting and decrypting SAML
 # messages here. You can configure up to 2 encryption keys at a time and the MSA
 # will attempt decryption with both. Only the first key will be used for encryption.
 encryptionKeys:
   - publicKey:
-      certFile: msa_encryption_1.crt
-      name: MSA Encryption 1
+      certFile: ${PRIMARY_PUBLIC_ENCRYPTION_KEY_CRT_PATH:-}
+      name: ${PRIMARY_PUBLIC_ENCRYPTION_KEY_CRT_COMMON_NAME:-MSA Encryption}
     privateKey:
-      keyFile: msa_encryption_1.pk8
+      keyFile: ${PRIMARY_PRIVATE_ENCRYPTION_KEY_PK8_PATH:-}
   - publicKey:
-      certFile: msa_encryption_2.crt
-      name: MSA Encryption 2
+      certFile: ${SECONDARY_PUBLIC_ENCRYPTION_KEY_CRT_PATH:-}
+      name: ${SECONDARY_PUBLIC_ENCRYPTION_KEY_CRT_COMMON_NAME:-Secondary MSA Encryption}
     privateKey:
-      keyFile: msa_encryption_2.pk8
+      keyFile: ${SECONDARY_PRIVATE_ENCRYPTION_KEY_PK8_PATH:-}
 
 # Settings for connecting with the hub can be configured here
 # if necessary.
 hub:
-  ssoUrl: https://www.signin.service.gov.uk/SAML2/SSO
+  ssoUrl: ${VERIFY_HUB_URL:-https://www.signin.service.gov.uk/SAML2/SSO}
 
 # Settings for obtaining Verify's metadata can be configured here.
 metadata:
-  environment: PRODUCTION
-  url: https://www.signin.service.gov.uk/SAML2/metadata/federation
+  environment: ${METADATA_ENVIRONMENT:-}
+  url: ${METADATA_URL:-https://www.signin.service.gov.uk/SAML2/metadata/federation}
   trustStore:
-    path: prod_ida_metadata.ts
-    password: puppet
+    path: ${METADATA_TRUST_STORE_PATH:-prod_ida_metadata.ts}
+    password: ${METADATA_TRUST_STORE_PASSWORD:-puppet}
 
 # Including this section will enable European identities and the universal dataset for matching
 # European identities are NOT enabled for production yet so this should remain false
